@@ -1,0 +1,11 @@
+"use client";
+import { useEffect, useState } from "react";
+import { Dataset, datasetsApi } from "../services/api";
+
+export function MLLab() {
+  const [data, setData] = useState<Dataset[]>([]), [dataset, setDataset] = useState<Dataset>(), [task, setTask] = useState("regression"), [target, setTarget] = useState(""), [result, setResult] = useState<Record<string, unknown>>();
+  useEffect(() => { datasetsApi.list().then(setData); }, []);
+  const columns = Object.keys((dataset?.profile?.columns ?? {}) as Record<string, unknown>);
+  const train = async () => { if (!dataset) return; const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"}/api/datasets/${dataset.id}/ml-runs`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ task, target: target || null, features: columns.filter((c) => c !== target) }) }); setResult((await response.json()).results); };
+  return <div className="space-y-6"><div><h1 className="text-3xl font-semibold">ML Lab</h1><p className="mt-2 text-slate-400">Reproducible supervised and unsupervised experiments.</p></div><div className="flex flex-wrap gap-3 rounded-xl border border-slate-800 p-4"><select onChange={async e => { const item = data.find(d => d.id === e.target.value); if (item) setDataset(await datasetsApi.details(item.id)); }}><option>Select dataset</option>{data.map(d => <option value={d.id} key={d.id}>{d.original_filename}</option>)}</select><select value={task} onChange={e => setTask(e.target.value)}>{["regression", "binary_classification", "multiclass_classification", "clustering", "anomaly_detection", "forecasting"].map(x => <option key={x}>{x}</option>)}</select>{!task.includes("clustering") && !task.includes("anomaly") && <select value={target} onChange={e => setTarget(e.target.value)}><option value="">Target</option>{columns.map(c => <option key={c}>{c}</option>)}</select>}<button className="rounded bg-cyan-700 px-4" onClick={train}>Train</button></div>{result && <section className="rounded-xl border border-slate-800 p-5"><h2 className="font-medium">Experiment result</h2><pre className="mt-3 overflow-auto text-xs">{JSON.stringify(result, null, 2)}</pre></section>}</div>;
+}

@@ -1,0 +1,3 @@
+from pydantic import BaseModel,Field
+class EvidenceInput(BaseModel): evidence_type:str;source_type:str;source_id:str|None=None;dataset_id:str|None=None;payload:dict;uncertainty:dict=Field(default_factory=dict);metadata_json:dict=Field(default_factory=dict)
+class DecisionRequest(BaseModel): question:str;decision_type:str="prescriptive";evidence:list[EvidenceInput];predictive_estimate:float|None=None;predictive_uncertainty:float|None=None;model_validation_performance:float|None=None;data_quality:float|None=None;sample_size:int|None=None;provenance_references:list[str]=Field(default_factory=list);ecd_score:float|None=None

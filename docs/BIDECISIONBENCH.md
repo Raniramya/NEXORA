@@ -1,0 +1,3 @@
+# BIDecisionBench SCM
+
+With fixed seed, season and marketing determine traffic; competitor price influences price; discount and price determine conversion; inventory, traffic, and conversion determine sales; revenue equals sales times price. The true discount-to-conversion coefficient is 0.12. The graph and parameters remain generator metadata, separate from case evidence. Cases cover eight question classes and use type-specific metrics (prediction error, causal/counterfactual effect error, decision accuracy, unsupported claim rate, calibration, coverage, selective risk, and abstention). Results are produced only by `experiments/run_all.py`.
