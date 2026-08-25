@@ -39,9 +39,15 @@ app.add_middleware(
 
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
+    details = []
+    for error in exc.errors():
+        item = dict(error)
+        if "ctx" in item:
+            item["ctx"] = {key: str(value) for key, value in item["ctx"].items()}
+        details.append(item)
     return JSONResponse(
         status_code=422,
-        content={"error": {"code": "validation_error", "message": "Request validation failed.", "details": exc.errors()}},
+        content={"error": {"code": "validation_error", "message": "Request validation failed.", "details": details}},
     )
 
 

@@ -8,7 +8,7 @@ def classify_intent(question):
     return next((v for k,v in INTENTS.items() if re.search(k,q)),"descriptive")
 
 def provenance(evidence):
-    return [{"id":f"ev-{uuid4()}","type":item.get("type","calculation"),"payload":item} for item in evidence]
+    return [{"id":item.get("id") or f"ev-{uuid4()}","type":item.get("type","calculation"),"payload":item.get("payload",item)} for item in evidence]
 
 class LLMProvider:
     def explain(self, payload): raise NotImplementedError
@@ -19,8 +19,11 @@ class DeterministicProvider(LLMProvider):
         ids=", ".join(x["id"] for x in payload["provenance"])
         if not payload["evidence"]: return "Insufficient evidence. No recommendation was produced."
         if status in {"ABSTAIN","UNCALIBRATED"}: return f"{status}: no recommendation. Evidence references: {ids}."
+        if payload.get("decision"):
+            recommendation = payload["decision"].get("recommendation") or "No recommendation is available."
+            return f"{status}: {recommendation} Grounded evidence references: {ids}."
         return f"Evidence-based {payload['intent']} finding. Review evidence references: {ids}."
 
-def investigate(question,evidence,reliability,provider=None):
-    graph=provenance(evidence); payload={"question":question,"intent":classify_intent(question),"evidence":evidence,"uncertainty":[x.get("uncertainty") for x in evidence],"reliability":reliability,"provenance":graph}
+def investigate(question,evidence,reliability,provider=None,decision=None):
+    graph=provenance(evidence); payload={"question":question,"intent":classify_intent(question),"evidence":evidence,"uncertainty":[x.get("uncertainty") for x in evidence],"reliability":reliability,"provenance":graph,"decision":decision}
     return {**payload,"explanation":(provider or DeterministicProvider()).explain(payload)}

@@ -6,8 +6,15 @@ import { MLLab } from "../../components/ml-lab";
 import { CausalLab } from "../../components/causal-lab";
 import { DecisionsWorkspace } from "../../components/decisions-workspace";
 import { InvestigatorWorkspace } from "../../components/investigator-workspace";
+import { AssetsWorkspace } from "../../components/assets-workspace";
+import { GeoWorkspace } from "../../components/geo-workspace";
+import { MaintenancePlanner } from "../../components/maintenance-planner";
+import { ResearchEvaluationWorkspace } from "../../components/research-evaluation-workspace";
 
 const sections: Record<string, { title: string; description: string }> = {
+  assets: { title: "Assets & Telemetry", description: "Register physical assets and collect traceable multimodal sensor evidence." },
+  geo: { title: "Geo Intelligence", description: "Measure asset proximity and inspect descriptive fault hotspots with traceable evidence." },
+  "maintenance-planner": { title: "Maintenance Planner", description: "Compare evidence-bounded Pareto schedules under operational constraints." },
   data: { title: "Data", description: "Connect and validate decision datasets before analysis." },
   analytics: { title: "Analytics", description: "Inspect descriptive evidence without causal claims." },
   "ml-lab": { title: "ML Lab", description: "Predictive modelling workspace; results will be computed and versioned." },
@@ -27,10 +34,14 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
   const page = sections[section];
   if (!page) notFound();
   if (section === "data") return <DataWorkspace />;
+  if (section === "assets") return <AssetsWorkspace />;
+  if (section === "geo") return <GeoWorkspace />;
+  if (section === "maintenance-planner") return <MaintenancePlanner />;
   if (section === "analytics") return <AnalyticsWorkspace />;
   if (section === "ml-lab") return <MLLab />;
   if (section === "causal-lab" || section === "scenarios") return <CausalLab />;
   if (section === "decisions") return <DecisionsWorkspace />;
   if (section === "ai-investigator") return <InvestigatorWorkspace />;
+  if (section === "experiments") return <ResearchEvaluationWorkspace />;
   return <PlaceholderPage {...page} />;
 }

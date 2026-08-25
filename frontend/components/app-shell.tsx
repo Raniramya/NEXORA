@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navigation = [["Executive overview", "/"], ["Data foundation", "/data"], ["Analytics", "/analytics"], ["ML studio", "/ml-lab"], ["Causal lab", "/causal-lab"], ["Scenarios", "/scenarios"], ["AI investigator", "/ai-investigator"], ["Decision register", "/decisions"], ["Experiments", "/experiments"]] as const;
+const navigation = [["Executive overview", "/"], ["Assets & telemetry", "/assets"], ["Geo intelligence", "/geo"], ["Maintenance planner", "/maintenance-planner"], ["Data foundation", "/data"], ["Analytics", "/analytics"], ["ML studio", "/ml-lab"], ["Causal lab", "/causal-lab"], ["Scenarios", "/scenarios"], ["AI investigator", "/ai-investigator"], ["Decision register", "/decisions"], ["Experiments", "/experiments"]] as const;
 
 export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
